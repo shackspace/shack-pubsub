@@ -31,3 +31,15 @@ wss.on 'connection', (socket) ->
 	socket.on 'close', () ->
 		log.info 'closing', sockets.uuid
 		sockets[socket.uuid] = undefined
+
+# start a REST2wsproxy
+
+ShackProxy = require '../node-shack-proxy'
+
+proxy = new ShackProxy 'ws://localhost:' + config.port
+
+app.get '/shackles/online', (req, res) ->
+	proxy.once '!bot', (msg) ->
+		res.send msg
+
+	proxy.send 'bot', '.online'

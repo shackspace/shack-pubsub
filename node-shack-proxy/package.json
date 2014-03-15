@@ -1,0 +1,14 @@
+{
+  "name": "node-shack-proxy",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.coffee",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ws": "^0.4.31"
+  }
+}
