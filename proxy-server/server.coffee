@@ -40,6 +40,7 @@ proxy = new ShackProxy 'ws://localhost:' + config.port
 
 app.get '/shackles/online', (req, res) ->
 	proxy.once '!bot', (msg) ->
+		res.set "Connection", "close"
 		res.send msg
 
 	proxy.send 'bot', '.online'
