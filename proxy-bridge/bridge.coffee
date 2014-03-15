@@ -28,6 +28,10 @@ socket.on 'message', (data, flags) ->
 	pub.publish msg.channel, msg.message
 	# // flags.masked will be set if the data was masked
 
+socket.on 'close', () ->
+		log.error 'socket closed'
+		process.exit 1 # let forever handle the rest
+
 sub.on 'psubscribe', (channel, count) ->
 	log.info 'subscribe', channel, count
 
