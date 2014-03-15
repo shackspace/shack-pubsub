@@ -1,0 +1,6 @@
+module.exports =
+	websocket:
+		url: 'ws://localhost:8080'
+	redis:
+		host: 'pubsub'
+		port: 6379

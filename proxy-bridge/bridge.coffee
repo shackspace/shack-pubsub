@@ -2,17 +2,18 @@ log4js = require 'log4js'
 log = log4js.getLogger 'proxy-bridge'
 redis = require 'redis'
 WebSocket = require 'ws'
+config = require './config'
 
-socket = new WebSocket 'ws://localhost:8080'
+socket = new WebSocket config.websocket.url
 socket.on 'open', ->
 	log.info 'open'
 
-sub = redis.createClient() #config.redis.port, config.redis.host
-pub = redis.createClient() #config.redis.port, config.redis.host
+sub = redis.createClient config.redis.port, config.redis.host
+pub = redis.createClient config.redis.port, config.redis.host
 
 onError = (err) ->
 	if err.message.indexOf 'ECONNREFUSED' > 0
-		log.warn "can't call glados"
+		log.warn "can't reach redis", err
 	else
 		log.err err.message
 

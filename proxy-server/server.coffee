@@ -3,14 +3,16 @@ log = log4js.getLogger 'proxy-server'
 uuid = require 'uuid'
 
 WebSocketServer = require('ws').Server
-express = require('express')
+express = require 'express'
+
+config = require './config'
 
 app = express()
 
 # app.use(express.static(__dirname + '/public'));
 
-server = app.listen 8080, ->
-	log.info 'listening'
+server = app.listen config.port, ->
+	log.info 'listening to port', config.port
 
 wss = new WebSocketServer
 	server: server
@@ -22,13 +24,10 @@ wss.on 'connection', (socket) ->
 	socket.on 'message', (msg) ->
 		log.info 'proxy', msg
 		for id, otherSocket of sockets
-			continue if id is socket.uuid
+			continue if id is socket.uuid or not otherSocket?
 			log.info 'send to', socket.uuid
 			otherSocket.send msg
-	# var id = setInterval(function() {
-	# 	ws.send(JSON.stringify(process.memoryUsage()), function() { /* ignore errors */ });
-	# }, 100);
-	# console.log('started client interval');
-	# socket.on 'close', function() {
-	# 	console.log('stopping client interval');
-	# 	clearInterval(id);
+
+	socket.on 'close', () ->
+		log.info 'closing', sockets.uuid
+		sockets[socket.uuid] = undefined
