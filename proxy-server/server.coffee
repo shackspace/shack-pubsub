@@ -39,8 +39,15 @@ ShackProxy = require '../node-shack-proxy'
 proxy = new ShackProxy 'ws://localhost:' + config.port
 
 app.get '/shackles/online', (req, res) ->
-	proxy.once '!bot', (msg) ->
+	handleAnswer = (msg) ->
 		res.set "Connection", "close"
 		res.send msg
+	proxy.once '!bot', handleAnswer
+
+	setTimeout ->
+		proxy.removeListener '!bot', handleAnswer
+		res.set "Connection", "close"
+		res.send 'Sorry, the shack does not respond to my inquiries.'
+	, 3000
 
 	proxy.send 'bot', '.online'

@@ -42,3 +42,20 @@ sub.on 'pmessage', (pattern, channel, message) ->
 		message: message
 
 sub.psubscribe "*"
+
+# heartbeat
+setInterval ->
+	log.debug 'send ping'
+	alive = false
+	socket.once 'pong', ->
+		alive = true
+		log.debug 'got pong'
+
+	setTimeout ->
+		if not alive
+			log.fatal 'did not get pong'
+			process.exit 1 
+	, 5000
+	socket.ping()
+
+, 10000
